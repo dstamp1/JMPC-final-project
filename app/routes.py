@@ -2,7 +2,7 @@ from app import app
 from flask import render_template, request, redirect
 from app.models import model
 from flask_pymongo import PyMongo
-import statistics
+
 
 mongodb_password = 'GL3evKMWcya1XEO8'
 mongodb_user = 'debugger'
