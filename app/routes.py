@@ -13,9 +13,6 @@ app.config['MONGO_URI'] = mongodb_url
 
 mongo = PyMongo(app)
 
-def average(d):
-    return {'rule':d['rule'],'difficulty':sum(d['difficulty'])/len(d['difficulty'])}
-
 @app.route('/')
 @app.route('/index')
 def index():
@@ -38,7 +35,17 @@ def add():
         document = {'rule':request.form['rule'],
                     'agerange':request.form['agerange'],
                     'difficulty':[int(request.form['difficulty'])],
-                    'tags':request.form.getlist('tags')
+                    'tags':[x.lower() for x in request.form.getlist('tags')]
                     }
         collection.insert(document)
         return redirect('/')
+
+@app.route('/tag/<tag>')
+def tag_search(tag):
+    collection = mongo.db.rules
+    rules = collection.aggregate([{"$match":{"tags":{"$in":[tag]}}},{ "$addFields": 
+            {"difficulty_average": 
+                { "$avg": "$difficulty" }
+            }
+        }])
+    return render_template('index.html', rules=rules)
