@@ -5,32 +5,51 @@
 {% block content %}
 <div class="container">
     <h1>Debugger Database</h1>
-    
-    <table class="striped">
-        <thead class="teal lighten-1">
-            <th>Rule</th>
-            <th>Age Range</th>
-            <th>Difficulty</th>
-            <th>Tags</th>
-        </thead>
-        {% for rule in rules %}
-        <tr>
-            <td>{{rule['rule']}}</td>
-            <td>{{rule['agerange']}}</td>
-            <td>{{rule['difficulty_average']|round(1)}}</td>
-            <td>
-                {% for i in range(5) %}
-                    {% if rule['tags'][i] %}
-                    <div class="chip">
-                        <a href="/tag/{{rule['tags'][i]}}" style="color:black;">
-                            {{rule['tags'][i]}}
-                        </a>
-                    </div>
-                    {% endif %}
+    <div class="row">
+        <div class="col s7 l4"><a href="/add" class="waves-effect waves-light btn-large">Add a Rule</a></div>
+        <div class="col s0 l6"></div>
+        <div class="col s5 l2 right-align"><a href="/" class="waves-effect waves-light btn-large">Reset</a></div>
+    </div>
+    <div class="row">
+        <div class="col s12">
+            <table class="striped">
+                <thead class="teal lighten-1">
+                    <th>Rule</th>
+                    <th>Age Range</th>
+                    <th>Difficulty</th>
+                    <th>Tags</th>
+                </thead>
+                {% for rule in rules %}
+                <tr>
+                    <td>
+                        <div class="chip">
+                            <a href="/rule/{{rule['_id']}}" style="color:black;">
+                                {{rule['rule']}}
+                            </a>
+                        </div>
+                    <td>{{rule['agerange']}}</td>
+                    <td>
+                        <div class="chip">
+                            <a href="/difficulty/{{rule['difficulty_average']|int}}" style="color:black;">
+                                {{rule['difficulty_average']|round(1)}}
+                            </a>
+                        </div>
+                    </td>
+                    <td>
+                        {% for i in range(5) %}
+                            {% if rule['tags'][i] %}
+                            <div class="chip">
+                                <a href="/tag/{{rule['tags'][i]}}" style="color:black;">
+                                    {{rule['tags'][i]}}
+                                </a>
+                            </div>
+                            {% endif %}
+                        {% endfor %}
+                    </td>
+                </tr>
                 {% endfor %}
-            </td>
-        </tr>
-        {% endfor %}
-    </table>
+            </table>
+        </div>
+    </div>
 </div>
 {% endblock %}

@@ -1,0 +1,44 @@
+{% extends 'base.html' %} {% block title %}Debugger Database - Homepage{% endblock %} {% block content %}
+<div class="container">
+    <div class="section">
+        <h5>Rule Detail</h5>
+        <p>{{rule['rule']}}</p>
+    </div>
+    <div class="section">
+        <h5>Rule Difficulty</h5>
+        <p>{{(rule['difficulty']|sum / rule['difficulty']|count)|round(0)}}</p>
+    </div>
+    <div class="section">
+        <h5>Rule Tags</h5>
+        {% for i in range(5) %} 
+            {% if rule['tags'][i] %}
+                <div class="chip">
+                    <a href="/tag/{{rule['tags'][i]}}" style="color:black;">
+                        {{rule['tags'][i]}}
+                    </a>
+                </div>
+            {% endif %} 
+        {% endfor %}
+    </div>
+    <div class="divider"></div>
+    <div class="section">
+        <h5>Rate This Rule's Difficulty</h5>
+        <form action='/updaterule' method='POST'>
+            <label>Difficulty Level:</label>
+            <div class="input-field">
+                    <input type="range" min="1" max="10" value="5" name="difficulty" />
+            </div>
+            <input type="hidden" name="_id" value="{{rule['_id']}}">
+            <input class="waves-effect waves-light btn" type="submit" value="Submit" />
+        </form>
+    </div>
+    
+    
+    
+    <div class="row">
+        <div class="col s7 l10 right-align"></div>
+        <div class="col s5 l2 right-align"><a href="/" class="waves-effect waves-light btn-large">Homepage</a></div>
+    </div>
+</div>       
+        
+{% endblock %}

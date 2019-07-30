@@ -3,6 +3,8 @@ from flask import render_template, request, redirect
 from app.models import model
 from flask_pymongo import PyMongo
 
+from bson.objectid import ObjectId
+
 
 mongodb_password = 'GL3evKMWcya1XEO8'
 mongodb_user = 'debugger'
@@ -49,3 +51,42 @@ def tag_search(tag):
             }
         }])
     return render_template('index.html', rules=rules)
+
+@app.route('/difficulty/<int:difficulty>')
+def difficulty_search(difficulty):
+    collection = mongo.db.rules
+    rules = collection.aggregate([{ 
+        "$addFields":{
+            "difficulty_average": { 
+                "$avg": "$difficulty" 
+            }
+        }
+        
+    },
+    {
+        "$match":{
+            "difficulty_average": { 
+                "$gte": difficulty-0.5, 
+                "$lt": difficulty+0.5
+            }
+        }
+    }
+    ])
+    
+    return render_template('index.html', rules=list(rules))
+
+@app.route('/rule/<objectID>')
+def rule_detail(objectID):
+    collection = mongo.db.rules
+    rule = collection.find_one({"_id": ObjectId(objectID)})
+    return render_template('rule.html',rule=rule)
+
+@app.route('/updaterule',methods=['GET','POST'])
+def updaterule():
+    if request.method == "POST":
+        collection = mongo.db.rules
+        collection.update(
+            {"_id": ObjectId(request.form['_id'])}, 
+            {'$push': {'difficulty':int(request.form['difficulty'])}}
+            )
+        return redirect('/rule/'+request.form['_id'])
