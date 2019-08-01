@@ -22,7 +22,7 @@
                 {% for rule in rules %}
                 <tr>
                     <td>
-                        <div class="chip">
+                        <div class="chip" style="overflow:hidden; text-overflow:ellipsis;">
                             <a href="/rule/{{rule['_id']}}" style="color:black;">
                                 {{rule['rule']}}
                             </a>
